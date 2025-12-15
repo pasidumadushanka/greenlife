@@ -81,9 +81,9 @@ $total_apps = $conn->query($sql_count)->fetch_assoc()['total'];
             <ul class="sidebar-menu">
                 <li><a href="dashboard.php" class="active"><i class="fas fa-th-large"></i> Dashboard</a></li>
                 <li><a href="../booking.php"><i class="fas fa-calendar-plus"></i> New Booking</a></li>
-                <li><a href="#"><i class="fas fa-user-edit"></i> My Profile</a></li>
-                <li><a href="#"><i class="fas fa-file-medical-alt"></i> Medical Records</a></li>
-                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="my_profile.php"><i class="fas fa-user-edit"></i> My Profile</a></li>
+                <li><a href="medical_records.php"><i class="fas fa-file-medical-alt"></i> Medical Records</a></li>
+                <li><a href="settings.php"><i class="fas fa-cog"></i> Settings</a></li>
             </ul>
         </aside>
 

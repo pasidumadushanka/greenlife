@@ -100,7 +100,7 @@ function getServiceImage($serviceName) {
         height: 100%;
         position: relative;
         border: 1px solid var(--glass-border);
-        background: rgba(255, 255, 255, 0.02);
+        background: rgba(248, 247, 247, 0.02);
     }
 
     .service-card:hover {
@@ -222,8 +222,9 @@ function getServiceImage($serviceName) {
                                     Book Session <i class="fas fa-arrow-right" style="margin-left: 5px;"></i>
                                 </a>
                             <?php else: ?>
-                                <a href="login.php" class="btn-main" style="display: block; text-align: center; background: transparent; border: 1px solid var(--glass-border); width: 100%;">
-                                    Login to Book
+                               <a href="login.php" class="btn-main" 
+                               style="display: block; text-align: center; background: transparent; border: 1px solid var(--primary); color: var(--primary); width: 100%; font-weight: 600;">
+                               Login to Book
                                 </a>
                             <?php endif; ?>
                         </div>
