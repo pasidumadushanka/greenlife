@@ -463,30 +463,40 @@
     </div>
 
     <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+        
+        <!-- Article 1 -->
         <div class="glass" style="padding: 0; overflow: hidden; border-radius: 15px;">
             <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" style="width: 100%; height: 200px; object-fit: cover;">
             <div style="padding: 20px;">
                 <small class="text-primary">YOGA</small>
                 <h4 style="margin: 10px 0;">5 Benefits of Morning Yoga</h4>
-                <a href="yogha.php" style="font-size: 0.9rem; color: #a0aec0;">Read More &rarr;</a>
+                <!-- Link එක වෙනස් කළා id=1 ලෙස -->
+                <a href="article.php?id=1" style="font-size: 0.9rem; color: #a0aec0;">Read More &rarr;</a>
             </div>
         </div>
+
+        <!-- Article 2 -->
         <div class="glass" style="padding: 0; overflow: hidden; border-radius: 15px;">
             <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" style="width: 100%; height: 200px; object-fit: cover;">
             <div style="padding: 20px;">
                 <small class="text-primary">DIET</small>
                 <h4 style="margin: 10px 0;">Superfoods for Immunity</h4>
-                <a href="Diet.php" style="font-size: 0.9rem; color: #a0aec0;">Read More &rarr;</a>
+                <!-- Link එක වෙනස් කළා id=2 ලෙස -->
+                <a href="article.php?id=2" style="font-size: 0.9rem; color: #a0aec0;">Read More &rarr;</a>
             </div>
         </div>
+
+        <!-- Article 3 -->
         <div class="glass" style="padding: 0; overflow: hidden; border-radius: 15px;">
             <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" style="width: 100%; height: 200px; object-fit: cover;">
             <div style="padding: 20px;">
                 <small class="text-primary">MIND</small>
                 <h4 style="margin: 10px 0;">The Art of Mindfulness</h4>
-                <a href="mind.php" style="font-size: 0.9rem; color: #a0aec0;">Read More &rarr;</a>
+                <!-- Link එක වෙනස් කළා id=3 ලෙස -->
+                <a href="article.php?id=3" style="font-size: 0.9rem; color: #a0aec0;">Read More &rarr;</a>
             </div>
         </div>
+
     </div>
 </section>
 
