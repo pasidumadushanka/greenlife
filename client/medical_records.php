@@ -24,12 +24,21 @@ $result = $conn->query($sql);
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .nav-content { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; }
+        .logo { font-size: 1.5rem; font-weight: bold; color: var(--primary); text-decoration: none; }
+    </style>
 </head>
 <body>
-    <nav class="glass" style="position: sticky; top: 0; z-index: 100;">
+    
+    <!-- FIXED NAV BAR -->
+    <nav class="glass" style="position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1);">
         <div class="container nav-content">
             <a href="../index.php" class="logo"><i class="fas fa-leaf"></i> GreenLife</a>
-            <a href="../logout.php" class="btn-main">Logout</a>
+            <div style="display: flex; gap: 20px; align-items: center;">
+                <span style="color: #e2e8f0; font-size: 0.9rem;">Hello, <b><?php echo explode(' ', $user_name)[0]; ?></b></span>
+                <a href="../logout.php" class="btn-main" style="padding: 8px 20px; font-size: 0.85rem;">Logout</a>
+            </div>
         </div>
     </nav>
 
@@ -52,7 +61,7 @@ $result = $conn->query($sql);
             <h2 class="section-title">Medical History</h2>
             
             <?php if ($result->num_rows > 0): ?>
-                <div class="stats-grid" style="grid-template-columns: 1fr;"> <!-- Single Column List -->
+                <div class="stats-grid" style="grid-template-columns: 1fr;"> 
                     <?php while($row = $result->fetch_assoc()): ?>
                         <div class="glass" style="padding: 25px; border-left: 5px solid var(--primary); margin-bottom: 20px;">
                             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
@@ -78,7 +87,7 @@ $result = $conn->query($sql);
             <?php else: ?>
                 <div class="glass" style="padding: 40px; text-align: center;">
                     <i class="fas fa-folder-open" style="font-size: 3rem; color: #a0aec0; margin-bottom: 20px;"></i>
-                    <p>No medical records found. Once you complete an appointment, it will appear here.</p>
+                    <p style="margin-top: 10px; color: #a0aec0;">No medical records found.</p>
                 </div>
             <?php endif; ?>
         </main>
