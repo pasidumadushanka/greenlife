@@ -1,0 +1,271 @@
+/* --- Client Dashboard Specific Styles --- */
+
+/* Dashboard Layout Wrapper */
+.dashboard-wrapper {
+    display: flex;
+    gap: 30px;
+    padding-top: 30px;
+    padding-bottom: 50px;
+    min-height: 85vh;
+}
+
+/* --- Sidebar Styling --- */
+.sidebar-nav {
+    width: 280px;
+    flex-shrink: 0;
+    height: fit-content;
+    padding: 30px 20px;
+    position: sticky;
+    top: 100px; /* Header එකට යටින් නවතින්න */
+}
+
+/* Sidebar User Profile Info */
+.user-profile-section {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.profile-img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 3px solid var(--primary);
+    padding: 3px;
+    margin-bottom: 15px;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+}
+
+.user-name {
+    color: var(--text-color);
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.user-role {
+    color: #a0aec0;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Sidebar Menu Links */
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar-menu li {
+    margin-bottom: 12px;
+}
+
+.sidebar-menu a {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 14px 20px;
+    color: #a0aec0;
+    text-decoration: none;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+/* Active & Hover States with Neon Glow */
+.sidebar-menu a:hover, 
+.sidebar-menu a.active {
+    background: linear-gradient(90deg, rgba(16, 185, 129, 0.15), transparent);
+    color: var(--primary);
+    border-left: 4px solid var(--primary);
+    box-shadow: 5px 0 15px rgba(16, 185, 129, 0.1);
+}
+
+.sidebar-menu a i {
+    width: 20px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+/* --- Main Content Area --- */
+.main-content {
+    flex-grow: 1;
+    width: 100%; /* Fix for flexbox responsiveness */
+}
+
+.section-title {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    color: var(--text-color);
+    border-left: 5px solid var(--accent);
+    padding-left: 15px;
+}
+
+/* --- Stats Cards Grid --- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: transform 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    background: rgba(16, 185, 129, 0.15);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.8rem;
+    color: var(--accent);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+}
+
+.stat-info h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-color);
+}
+
+.stat-info p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #94a3b8;
+}
+
+/* --- Next Appointment Highlight Box --- */
+.upcoming-box {
+    padding: 30px; 
+    margin-bottom: 40px; 
+    position: relative;
+    overflow: hidden;
+}
+
+/* Background Glow Effect inside box */
+.upcoming-box::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 200px;
+    height: 200px;
+    background: var(--primary);
+    filter: blur(80px);
+    opacity: 0.2;
+    border-radius: 50%;
+}
+
+.app-details h2 {
+    font-size: 2.2rem;
+    color: var(--primary);
+    margin: 10px 0;
+    text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+.app-meta {
+    display: flex;
+    gap: 30px;
+    color: #e2e8f0;
+    font-size: 1.1rem;
+    margin-top: 15px;
+}
+
+.app-meta i {
+    color: var(--accent);
+    margin-right: 8px;
+}
+
+/* --- Futuristic Table Styling --- */
+.table-container {
+    padding: 25px;
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px; /* පේළි අතර පරතරය */
+}
+
+.data-table th {
+    text-align: left;
+    padding: 15px 20px;
+    color: #94a3b8;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+
+.data-table tbody tr {
+    background: rgba(255, 255, 255, 0.03);
+    transition: 0.3s;
+}
+
+.data-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: scale(1.01);
+}
+
+.data-table td {
+    padding: 20px;
+    color: var(--text-color);
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+}
+
+.data-table td:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.data-table td:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 6px 15px;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    display: inline-block;
+}
+
+.status-pending { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+.status-confirmed { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+.status-completed { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+.status-cancelled { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .dashboard-wrapper {
+        flex-direction: column;
+    }
+    .sidebar-nav {
+        width: 100%;
+        position: relative;
+        top: 0;
+    }
+    .app-meta {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

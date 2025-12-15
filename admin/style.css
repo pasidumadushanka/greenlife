@@ -1,0 +1,127 @@
+/* --- Admin Dashboard Fixed Styles --- */
+
+/* 1. Layout Fixes */
+.dashboard-container {
+    display: flex; /* Sidebar සහ Content දෙපැත්තට */
+    min-height: 100vh;
+}
+
+/* Sidebar එකේ පාට සහ ප්‍රමාණය */
+.sidebar-nav {
+    width: 260px;
+    background: #0b1120; /* තද කළු පාට */
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    flex-shrink: 0;
+}
+
+/* Main Content එක මැදට ගැනීම */
+.main-content {
+    flex-grow: 1;
+    padding: 30px;
+    width: 100%;
+}
+
+/* 2. Stats Grid Fix (මේකෙන් තමයි කාඩ් 3 පේළියට ගන්නේ) */
+.admin-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* සමාන කොටස් 3ක් */
+    gap: 25px;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+/* Card Design */
+.stat-card {
+    background: rgba(255, 255, 255, 0.03); /* වීදුරු වගේ පෙනුම */
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Icon Styles */
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+}
+
+/* Card Colors */
+.card-orange { border-bottom: 4px solid #f59e0b; }
+.card-blue { border-bottom: 4px solid #3b82f6; }
+.card-green { border-bottom: 4px solid #10b981; }
+
+.stat-info h3 {
+    font-size: 2rem;
+    margin: 0;
+    color: #fff;
+}
+
+.stat-info p {
+    margin: 0;
+    color: #a0aec0;
+    font-size: 0.9rem;
+}
+
+/* 3. Table Fixes */
+.admin-table-container {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th, .data-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: #e2e8f0;
+}
+
+.data-table th {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--primary);
+}
+
+/* Buttons */
+.btn-action {
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    margin-right: 5px;
+    display: inline-block;
+}
+
+.btn-approve { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+.btn-reject { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+
+/* Responsive (Mobile වලදී එක පේළියට වැටෙන්න) */
+@media (max-width: 900px) {
+    .admin-stats-grid {
+        grid-template-columns: 1fr; /* Mobile වලදී එක කාඩ් එකයි */
+    }
+    .dashboard-container {
+        flex-direction: column;
+    }
+    .sidebar-nav {
+        width: 100%;
+    }
+}
