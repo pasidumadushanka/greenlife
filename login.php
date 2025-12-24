@@ -1,9 +1,14 @@
 <?php
+// 1. Vercel Session Fix (අනිවාර්යයෙන්ම උඩින්ම තිබිය යුතුයි)
+session_save_path('/tmp');
+session_start();
+
+// 2. Database Connection
 include 'config/db_conn.php';
-include 'includes/header.php';
 
 $error = "";
 
+// 3. Login Logic (HTML පෙන්වීමට පෙර මෙය සිදු විය යුතුයි)
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = $_POST['password'];
@@ -15,22 +20,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result->num_rows == 1) {
         $row = $result->fetch_assoc();
         
-        // Password එක verify කිරීම (Hashed password vs Input password)
+        // Password එක verify කිරීම
         if (password_verify($password, $row['password'])) {
-            // Login Success - Session ආරම්භ කිරීම
+            // Login Success - Session Data සකස් කිරීම
             $_SESSION['user_id'] = $row['id'];
             $_SESSION['fullname'] = $row['fullname'];
             $_SESSION['role'] = $row['role'];
 
-            // Role එක අනුව අදාල පිටුවට යැවීම
+            // Role එක අනුව Redirect කිරීම
+            // වැදගත්: මෙතනදි HTML output එකක් යන්න කලින් Redirect වෙන්න ඕන
             if($row['role'] == 'admin'){
-                header("Location: admin/dashboard.php"); // තාම හදලා නෑ
+                header("Location: admin/dashboard.php");
             } elseif($row['role'] == 'therapist'){
-                header("Location: therapist/dashboard.php"); // තාම හදලා නෑ
+                header("Location: therapist/dashboard.php");
             } else {
-                header("Location: client/dashboard.php"); // Client නම් Home එකට
+                header("Location: client/dashboard.php");
             }
-            exit();
+            exit(); // Redirect වුනාම Script එක මෙතනින් නවත්වන්න ඕන
 
         } else {
             $error = "Invalid Password!";
@@ -39,6 +45,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error = "No account found with this email!";
     }
 }
+
+// 4. Header එක Include කරන්න (Logic එක ඉවර වුනාට පස්සේ)
+// මෙතනින් තමයි HTML පටන් ගන්නේ
+include 'includes/header.php'; 
 ?>
 
 <div class="auth-container">

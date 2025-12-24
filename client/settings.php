@@ -1,4 +1,5 @@
 <?php
+session_save_path('/tmp'); // මේ පේළිය අලුතින් දැම්මා
 session_start();
 include '../config/db_conn.php';
 
