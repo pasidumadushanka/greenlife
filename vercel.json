@@ -5,11 +5,19 @@
       "use": "vercel-php@0.7.2"
     },
     {
-      "src": "**/*.{html,css,js,jpg,jpeg,png,gif,svg,ico,mp4}",
+      "src": "assets/**/*",
       "use": "@vercel/static"
     }
   ],
   "routes": [
+    {
+      "src": "/(assets/.*)",
+      "dest": "/$1"
+    },
+    {
+      "src": "/",
+      "dest": "/index.php"
+    },
     {
       "src": "/(.*)",
       "dest": "/$1"
