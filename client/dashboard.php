@@ -1,7 +1,7 @@
 <?php
 session_save_path('/tmp'); // Vercel Session Fix
 session_start();
-include '../config/db_conn.php';
+include __DIR__ . '/../config/db_conn.php';
 
 // User Log වී ඇත්ද සහ ඔහු Client කෙනෙක්ද යන්න තහවුරු කරගැනීම
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'client') {
