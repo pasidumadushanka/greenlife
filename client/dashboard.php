@@ -1,5 +1,5 @@
 <?php
-session_save_path('/tmp'); // මේ පේළිය අලුතින් දැම්මා
+session_save_path('/tmp'); // Vercel Session Fix
 session_start();
 include '../config/db_conn.php';
 
@@ -14,7 +14,7 @@ $user_name = $_SESSION['fullname'];
 
 // --- DATA FETCHING (දත්ත ලබා ගැනීම) ---
 
-// 1. ඉදිරි Appointment එක (Upcoming) - ඊළඟට එන්න තියෙන එක විතරක් ගන්න
+// 1. ඉදිරි Appointment එක (Upcoming)
 $sql_upcoming = "SELECT a.*, s.service_name, s.price 
                  FROM appointments a 
                  JOIN services s ON a.service_id = s.id 
@@ -23,7 +23,7 @@ $sql_upcoming = "SELECT a.*, s.service_name, s.price
 $res_upcoming = $conn->query($sql_upcoming);
 $upcoming = $res_upcoming->fetch_assoc();
 
-// 2. පසුගිය Appointments (History) - අන්තිම 5
+// 2. පසුගිය Appointments (History)
 $sql_history = "SELECT a.*, s.service_name 
                 FROM appointments a 
                 JOIN services s ON a.service_id = s.id 
@@ -47,29 +47,57 @@ $total_apps = $conn->query($sql_count)->fetch_assoc()['total'];
     <!-- Global CSS (Main Theme) -->
     <link rel="stylesheet" href="../assets/css/style.css">
     
-    <!-- Client Dashboard Specific CSS (New) -->
+    <!-- Client Dashboard Specific CSS -->
     <link rel="stylesheet" href="style.css">
     
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* Navbar Tweaks for Dashboard */
+        .nav-content { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; }
+        .logo { font-size: 1.5rem; font-weight: bold; color: var(--primary); text-decoration: none; }
+        
+        /* Mobile Toggle Button Style */
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+            margin-right: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            .user-welcome-msg { display: none; } /* Mobile වල නම හංගනවා ඉඩ මදි නිසා */
+        }
+    </style>
 </head>
 <body>
 
     <!-- Top Navigation Bar -->
-    <nav class="glass" style="position: sticky; top: 0; z-index: 100;">
+    <nav class="glass" style="position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1);">
         <div class="container nav-content">
-            <a href="../index.php" class="logo"><i class="fas fa-leaf"></i> GreenLife</a>
+            <div style="display: flex; align-items: center;">
+                <!-- Mobile Menu Toggle -->
+                <div class="menu-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <a href="../index.php" class="logo"><i class="fas fa-leaf"></i> GreenLife</a>
+            </div>
+
             <div style="display: flex; gap: 20px; align-items: center;">
-                <span style="color: var(--text-color);">Hello, <b><?php echo explode(' ', $user_name)[0]; ?></b></span>
-                <a href="../index.php" class="btn-main" style="padding: 8px 20px; font-size: 0.85rem;">Logout</a>
+                <span class="user-welcome-msg" style="color: var(--text-color);">Hello, <b><?php echo explode(' ', $user_name)[0]; ?></b></span>
+                <!-- Logout Link Fixed -->
+                <a href="../logout.php" class="btn-main" style="padding: 8px 20px; font-size: 0.85rem;">Logout</a>
             </div>
         </div>
     </nav>
 
     <div class="container dashboard-wrapper">
         
-        <!-- Sidebar Navigation (New Structure) -->
-        <aside class="glass sidebar-nav">
+        <!-- Sidebar Navigation -->
+        <aside class="glass sidebar-nav" id="sidebar">
             <!-- User Profile Section -->
             <div class="user-profile-section">
                 <img src="https://ui-avatars.com/api/?name=<?php echo $user_name; ?>&background=10b981&color=fff" class="profile-img" alt="Profile">
@@ -92,7 +120,7 @@ $total_apps = $conn->query($sql_count)->fetch_assoc()['total'];
             
             <h2 class="section-title">Overview</h2>
 
-            <!-- Stats Grid (New CSS Classes) -->
+            <!-- Stats Grid -->
             <div class="stats-grid">
                 <!-- Card 1 -->
                 <div class="glass stat-card">
@@ -120,9 +148,9 @@ $total_apps = $conn->query($sql_count)->fetch_assoc()['total'];
                 </div>
             </div>
 
-            <!-- Upcoming Appointment Section (New Design) -->
+            <!-- Upcoming Appointment Section -->
             <div class="glass upcoming-box">
-                <div style="display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 2;">
+                <div style="display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 2; flex-wrap: wrap; gap: 20px;">
                     <div>
                         <h4 style="color: #a0aec0; text-transform: uppercase; letter-spacing: 1px;">Next Session</h4>
                         
@@ -150,7 +178,7 @@ $total_apps = $conn->query($sql_count)->fetch_assoc()['total'];
                 </div>
             </div>
 
-            <!-- Recent History Table (New Design) -->
+            <!-- Recent History Table -->
             <div class="glass table-container">
                 <h3 style="margin-bottom: 20px; color: var(--text-color);">Recent History</h3>
                 
@@ -174,9 +202,8 @@ $total_apps = $conn->query($sql_count)->fetch_assoc()['total'];
                                     <td><?php echo $row['appointment_time']; ?></td>
                                     <td>
                                         <?php 
-                                            // Status Badge Logic Update
                                             $status = $row['status'];
-                                            $badgeClass = 'status-pending'; // Default
+                                            $badgeClass = 'status-pending'; 
                                             
                                             if($status == 'confirmed') $badgeClass = 'status-confirmed';
                                             elseif($status == 'completed') $badgeClass = 'status-completed';
@@ -201,6 +228,14 @@ $total_apps = $conn->query($sql_count)->fetch_assoc()['total'];
 
         </main>
     </div>
+
+    <!-- Script to Toggle Sidebar on Mobile -->
+    <script>
+        function toggleSidebar() {
+            var sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+    </script>
 
 </body>
 </html>
