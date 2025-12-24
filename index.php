@@ -250,7 +250,7 @@
 <header class="hero-section">
     <!-- VIDEO BACKGROUND -->
     <video autoplay muted loop playsinline class="video-bg">
-        <source src="assets/hero (2).mp4" type="video/mp4">
+        <source src="assets/hero_bg.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
 
