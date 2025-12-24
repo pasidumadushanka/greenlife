@@ -186,3 +186,107 @@ a {
         top: 0;
     }
 }
+/* --- MOBILE RESPONSIVE UPDATES --- */
+
+/* 1. Mobile Navigation Logic */
+.menu-toggle {
+    display: none; /* Desktop එකේදි පෙන්වන්නේ නෑ */
+    font-size: 1.5rem;
+    color: var(--primary);
+    cursor: pointer;
+}
+
+/* Mobile Breakpoint (Phones & Tablets) */
+@media (max-width: 768px) {
+    
+    /* Navigation Bar */
+    .menu-toggle {
+        display: block; /* ෆෝන් එකේදි පෙන්වනවා */
+    }
+
+    .nav-links {
+        display: none; /* මුලින් හංගනවා */
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 70px; /* Header එකට යටින් */
+        left: 0;
+        background: rgba(11, 17, 32, 0.95); /* තද පසුබිම */
+        backdrop-filter: blur(10px);
+        padding: 20px;
+        border-bottom: 1px solid var(--glass-border);
+        text-align: center;
+        border-radius: 0 0 20px 20px;
+    }
+
+    /* JavaScript වලින් active class එක වැටුනම පෙන්වනවා */
+    .nav-links.active {
+        display: flex;
+        animation: slideDown 0.4s ease forwards;
+    }
+
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .nav-links li {
+        margin: 15px 0;
+    }
+
+    /* Hero Section Text Sizes */
+    .hero-title {
+        font-size: 2.8rem !important; /* අකුරු පොඩි කිරීම */
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem !important;
+        padding: 0 15px;
+    }
+
+    /* Grids (එක පේළියට වැටෙන්න) */
+    .grid, .services-grid, .stats-grid, .about-grid, .booking-wrapper {
+        grid-template-columns: 1fr !important; /* තනි තීරුවක් ලෙස */
+        flex-direction: column; /* Flexbox නම් පහළට */
+    }
+
+    /* Dashboard Fixes */
+    .dashboard-wrapper {
+        flex-direction: column;
+    }
+
+    .sidebar-nav {
+        width: 100%; /* Sidebar එක සම්පූර්ණ පළලට */
+        margin-bottom: 20px;
+        position: relative;
+        top: 0;
+    }
+
+    /* Table Scrolling (වගු එළියට යන්නේ නැතුව Scroll වෙන්න) */
+    .table-container, .glass {
+        overflow-x: auto; /* හරහට Scroll වෙන්න */
+    }
+
+    .data-table {
+        min-width: 600px; /* වගුවේ අවම පළල */
+    }
+
+    /* Login/Register Forms */
+    .auth-card {
+        padding: 20px !important;
+    }
+    
+    /* Stats Bar (Home Page) */
+    .stats-bar {
+        grid-template-columns: 1fr 1fr !important; /* දෙක දෙක පෙන්වන්න */
+        gap: 15px;
+        padding: 20px;
+    }
+    
+    .stat-item {
+        border: none !important;
+        padding: 10px;
+        background: rgba(255,255,255,0.02);
+        border-radius: 10px;
+    }
+}

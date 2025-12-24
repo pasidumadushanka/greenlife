@@ -1,22 +1,16 @@
 <?php
-// 1. Vercel සඳහා Session Path සැකසීම
 session_save_path('/tmp');
-
-// Session එක දැනටමත් Start වී නැත්නම් පමණක් Start කරන්න
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// 2. Dashboard Link එක Role එක අනුව වෙනස් කිරීම
-$dashboard_link = "client/dashboard.php"; // Default
-
+// Dashboard Link Logic
+$dashboard_link = "client/dashboard.php";
 if (isset($_SESSION['role'])) {
     if ($_SESSION['role'] == 'admin') {
         $dashboard_link = "admin/dashboard.php";
     } elseif ($_SESSION['role'] == 'therapist') {
         $dashboard_link = "therapist/dashboard.php";
-    } else {
-        $dashboard_link = "client/dashboard.php";
     }
 }
 ?>
@@ -27,18 +21,14 @@ if (isset($_SESSION['role'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GreenLife Wellness Center</title>
-    <!-- Stylesheet -->
     <link rel="stylesheet" href="assets/css/style.css">
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        /* Header Specific Styles */
+        /* Header Base Styles */
         nav {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
+            top: 0; left: 0; width: 100%;
             z-index: 1000;
             padding: 15px 0;
             transition: 0.4s;
@@ -61,40 +51,62 @@ if (isset($_SESSION['role'])) {
             gap: 30px;
         }
         .nav-links a {
-            text-decoration: none; /* Link යට ඉරි ඉවත් කිරීම */
+            text-decoration: none;
             font-weight: 500;
+            transition: 0.3s;
         }
         .nav-links a:hover {
             color: var(--primary);
-            text-shadow: 0 0 8px var(--primary);
         }
     </style>
 </head>
 <body>
 
-<!-- Glassmorphism Navbar -->
 <nav class="glass">
     <div class="container nav-content">
         <a href="index.php" class="logo">
             <i class="fas fa-leaf"></i> GreenLife
         </a>
+
+        <!-- Hamburger Icon for Mobile -->
+        <div class="menu-toggle" id="mobile-menu">
+            <i class="fas fa-bars"></i>
+        </div>
         
-        <ul class="nav-links">
+        <ul class="nav-links" id="nav-list">
             <li><a href="index.php">Home</a></li>
             <li><a href="services.php">Services</a></li>
             <li><a href="about.php">About</a></li>
             
             <?php if(isset($_SESSION['user_id'])): ?>
-                <!-- Logged In නම්: Dashboard Link එක Role එක අනුව යයි -->
                 <li><a href="<?php echo $dashboard_link; ?>" style="color: var(--accent);">Dashboard</a></li>
                 <li><a href="logout.php" class="btn-main" style="padding: 8px 20px; font-size: 0.9rem;">Logout</a></li>
             <?php else: ?>
-                <!-- Log In වී නැත්නම් -->
                 <li><a href="login.php">Login</a></li>
                 <li><a href="register.php" class="btn-main" style="padding: 8px 20px; font-size: 0.9rem;">Sign Up</a></li>
             <?php endif; ?>
         </ul>
     </div>
 </nav>
-<!-- Body content starts with padding to avoid overlap with fixed header -->
+
+<!-- JavaScript for Mobile Menu Toggle -->
+<script>
+    const menuBtn = document.getElementById('mobile-menu');
+    const navList = document.getElementById('nav-list');
+
+    menuBtn.addEventListener('click', () => {
+        navList.classList.toggle('active');
+        
+        // අයිකන් එක මාරු කිරීම (Bars <-> Times)
+        const icon = menuBtn.querySelector('i');
+        if (navList.classList.contains('active')) {
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-times');
+        } else {
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        }
+    });
+</script>
+
 <div style="padding-top: 80px;"></div>

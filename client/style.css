@@ -269,3 +269,19 @@
         gap: 10px;
     }
 }
+@media (max-width: 768px) {
+    .sidebar-nav {
+        display: none; /* Mobile වලදි මුලින් හංගනවා */
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    
+    .sidebar-nav.active {
+        display: block; /* බටන් එක එබුවම පෙන්වනවා */
+        animation: fadeIn 0.5s;
+    }
+
+    .nav-content {
+        padding: 0 20px; /* Mobile Padding */
+    }
+}
