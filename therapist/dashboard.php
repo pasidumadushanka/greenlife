@@ -1,7 +1,7 @@
 <?php
 session_save_path('/tmp'); // මේ පේළිය අලුතින් දැම්මා
 session_start();
-include '../config/db_conn.php';
+include __DIR__ . '/../config/db_conn.php';
 
 // 1. Check if user is Therapist
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'therapist') {

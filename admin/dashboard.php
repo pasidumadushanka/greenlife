@@ -1,7 +1,7 @@
 <?php
 session_save_path('/tmp');
 session_start();
-include '../config/db_conn.php';
+include __DIR__ . '/../config/db_conn.php';
 
 // Security Check
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
