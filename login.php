@@ -1,72 +1,81 @@
 <?php
-// 1. Error Reporting On කිරීම (Error එකක් ආවොත් එළියට පේන්න)
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// 1. Output Buffering On කිරීම (Header Issues විසඳීමට මෙය අනිවාර්යයි)
+ob_start();
 
-include __DIR__ . '/config/db_conn.php'; // Absolute path භාවිතා කිරීම
+include 'config/db_conn.php';
 
-echo "<h3>Debugging Started...</h3>";
+$error = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
-    echo "Form Submitted.<br>";
-    
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = $_POST['password'];
-
-    echo "Email Input: " . $email . "<br>";
-    // echo "Password Input: " . $password . "<br>"; // ආරක්ෂාවට පාස්වර්ඩ් එක පෙන්වන්නේ නෑ
-
-    // Database Connection Check
-    if ($conn->connect_error) {
-        die("Connection Failed: " . $conn->connect_error);
-    } else {
-        echo "Database Connected Successfully.<br>";
-    }
 
     $sql = "SELECT * FROM users WHERE email='$email'";
     $result = $conn->query($sql);
 
     if ($result->num_rows == 1) {
-        echo "User Found in Database.<br>";
         $row = $result->fetch_assoc();
         
-        // Password Hash එක බලන්න (Debug සඳහා)
-        echo "Stored Hash: " . substr($row['password'], 0, 10) . "...<br>";
-
         if (password_verify($password, $row['password'])) {
-            echo "Password Verified: <b style='color:green'>SUCCESS</b><br>";
-
-            // Cookies සෙට් කිරීම
+            
+            // 2. Cookies සකස් කිරීම (පැය 24ක් සඳහා)
+            // වැදගත්: "/" මගින් මුළු වෙබ් අඩවියටම මෙය අදාල බව කියයි
             setcookie("user_id", $row['id'], time() + (86400 * 1), "/"); 
             setcookie("fullname", $row['fullname'], time() + (86400 * 1), "/");
             setcookie("role", $row['role'], time() + (86400 * 1), "/");
 
-            echo "Cookies Set Command Sent.<br>";
-            echo "User Role: " . $row['role'] . "<br>";
-            echo "<br><b>Login Logic is Working! The issue might be Redirection.</b>";
-            
-            // Redirect එක තාවකාලිකව නතර කර ඇත (Error එක බලාගැනීමට)
-            // header("Location: client/dashboard.php"); 
+            // 3. Redirect කිරීම
+            if($row['role'] == 'admin'){
+                header("Location: admin/dashboard.php");
+            } elseif($row['role'] == 'therapist'){
+                header("Location: therapist/dashboard.php");
+            } else {
+                header("Location: client/dashboard.php");
+            }
+            exit();
 
         } else {
-            echo "Password Verify: <b style='color:red'>FAILED</b><br>";
-            echo "Make sure the user was created with password_hash()";
+            $error = "Invalid Password!";
         }
     } else {
-        echo "User Search: <b style='color:red'>No user found with this email.</b><br>";
+        $error = "No account found with this email!";
     }
-} else {
-    echo "Waiting for form submission...<br>";
 }
+
+// Header එක Include කිරීම
+include 'includes/header.php'; 
 ?>
 
-<!-- HTML Form (Debugging සඳහා සරලව) -->
-<form method="POST" style="margin: 50px; padding: 20px; border: 1px solid white; color: white;">
-    <label>Email:</label><br>
-    <input type="email" name="email" required style="color:black"><br><br>
-    <label>Password:</label><br>
-    <input type="password" name="password" required style="color:black"><br><br>
-    <button type="submit" style="color:black">Test Login</button>
-</form>
+<div class="auth-container">
+    <div class="glass auth-card">
+        <h2 style="text-align: center; margin-bottom: 20px;">Welcome Back</h2>
+        
+        <?php if($error): ?>
+            <div class="error-msg"><?php echo $error; ?></div>
+        <?php endif; ?>
+
+        <form method="POST" action="">
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
+            </div>
+
+            <button type="submit" class="btn-main" style="width: 100%;">Login</button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Don't have an account? <a href="register.php">Register here</a></p>
+        </div>
+    </div>
+</div>
+
+<?php 
+include 'includes/footer.php'; 
+// Output එක යැවීම
+ob_end_flush();
+?>
