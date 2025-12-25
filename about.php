@@ -1,7 +1,7 @@
 <?php
 session_save_path('/tmp');
 session_start();
-include 'includes/header.php';
+include __DIR__ . '/../config/db_conn.php';
 ?>
 
 <style>

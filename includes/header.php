@@ -1,16 +1,20 @@
 <?php
-session_save_path('/tmp');
+// Session එක දැනටමත් Start වී නැත්නම් පමණක් Path එක හදලා Start කරන්න
 if (session_status() === PHP_SESSION_NONE) {
+    session_save_path('/tmp');
     session_start();
 }
 
-// Dashboard Link Logic
-$dashboard_link = "client/dashboard.php";
+// 2. Dashboard Link එක Role එක අනුව වෙනස් කිරීම
+$dashboard_link = "client/dashboard.php"; // Default
+
 if (isset($_SESSION['role'])) {
     if ($_SESSION['role'] == 'admin') {
         $dashboard_link = "admin/dashboard.php";
     } elseif ($_SESSION['role'] == 'therapist') {
         $dashboard_link = "therapist/dashboard.php";
+    } else {
+        $dashboard_link = "client/dashboard.php";
     }
 }
 ?>
