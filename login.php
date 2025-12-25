@@ -1,82 +1,72 @@
 <?php
-// 1. Vercel Session Fix (අනිවාර්යයෙන්ම උඩින්ම තිබිය යුතුයි)
-session_save_path('/tmp');
-session_start();
+// 1. Error Reporting On කිරීම (Error එකක් ආවොත් එළියට පේන්න)
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-// 2. Database Connection
-include 'config/db_conn.php';
+include __DIR__ . '/config/db_conn.php'; // Absolute path භාවිතා කිරීම
 
-$error = "";
+echo "<h3>Debugging Started...</h3>";
 
-// 3. Login Logic (HTML පෙන්වීමට පෙර මෙය සිදු විය යුතුයි)
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    
+    echo "Form Submitted.<br>";
+    
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = $_POST['password'];
 
-    // User ව email එකෙන් සොයන්න
+    echo "Email Input: " . $email . "<br>";
+    // echo "Password Input: " . $password . "<br>"; // ආරක්ෂාවට පාස්වර්ඩ් එක පෙන්වන්නේ නෑ
+
+    // Database Connection Check
+    if ($conn->connect_error) {
+        die("Connection Failed: " . $conn->connect_error);
+    } else {
+        echo "Database Connected Successfully.<br>";
+    }
+
     $sql = "SELECT * FROM users WHERE email='$email'";
     $result = $conn->query($sql);
 
     if ($result->num_rows == 1) {
+        echo "User Found in Database.<br>";
         $row = $result->fetch_assoc();
         
-        // Password එක verify කිරීම
-        if (password_verify($password, $row['password'])) {
-            // Login Success - Session Data සකස් කිරීම
-            $_SESSION['user_id'] = $row['id'];
-            $_SESSION['fullname'] = $row['fullname'];
-            $_SESSION['role'] = $row['role'];
+        // Password Hash එක බලන්න (Debug සඳහා)
+        echo "Stored Hash: " . substr($row['password'], 0, 10) . "...<br>";
 
-            // Role එක අනුව Redirect කිරීම
-            // වැදගත්: මෙතනදි HTML output එකක් යන්න කලින් Redirect වෙන්න ඕන
-            if($row['role'] == 'admin'){
-                header("Location: admin/dashboard.php");
-            } elseif($row['role'] == 'therapist'){
-                header("Location: therapist/dashboard.php");
-            } else {
-                header("Location: client/dashboard.php");
-            }
-            exit(); // Redirect වුනාම Script එක මෙතනින් නවත්වන්න ඕන
+        if (password_verify($password, $row['password'])) {
+            echo "Password Verified: <b style='color:green'>SUCCESS</b><br>";
+
+            // Cookies සෙට් කිරීම
+            setcookie("user_id", $row['id'], time() + (86400 * 1), "/"); 
+            setcookie("fullname", $row['fullname'], time() + (86400 * 1), "/");
+            setcookie("role", $row['role'], time() + (86400 * 1), "/");
+
+            echo "Cookies Set Command Sent.<br>";
+            echo "User Role: " . $row['role'] . "<br>";
+            echo "<br><b>Login Logic is Working! The issue might be Redirection.</b>";
+            
+            // Redirect එක තාවකාලිකව නතර කර ඇත (Error එක බලාගැනීමට)
+            // header("Location: client/dashboard.php"); 
 
         } else {
-            $error = "Invalid Password!";
+            echo "Password Verify: <b style='color:red'>FAILED</b><br>";
+            echo "Make sure the user was created with password_hash()";
         }
     } else {
-        $error = "No account found with this email!";
+        echo "User Search: <b style='color:red'>No user found with this email.</b><br>";
     }
+} else {
+    echo "Waiting for form submission...<br>";
 }
-
-// 4. Header එක Include කරන්න (Logic එක ඉවර වුනාට පස්සේ)
-// මෙතනින් තමයි HTML පටන් ගන්නේ
-include 'includes/header.php'; 
 ?>
 
-<div class="auth-container">
-    <div class="glass auth-card">
-        <h2 style="text-align: center; margin-bottom: 20px;">Welcome Back</h2>
-        
-        <?php if($error): ?>
-            <div class="error-msg"><?php echo $error; ?></div>
-        <?php endif; ?>
-
-        <form method="POST" action="">
-            <div class="form-group">
-                <label>Email Address</label>
-                <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
-            </div>
-
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
-            </div>
-
-            <button type="submit" class="btn-main" style="width: 100%;">Login</button>
-        </form>
-
-        <div class="auth-footer">
-            <p>Don't have an account? <a href="register.php">Register here</a></p>
-        </div>
-    </div>
-</div>
-
-<?php include 'includes/footer.php'; ?>
+<!-- HTML Form (Debugging සඳහා සරලව) -->
+<form method="POST" style="margin: 50px; padding: 20px; border: 1px solid white; color: white;">
+    <label>Email:</label><br>
+    <input type="email" name="email" required style="color:black"><br><br>
+    <label>Password:</label><br>
+    <input type="password" name="password" required style="color:black"><br><br>
+    <button type="submit" style="color:black">Test Login</button>
+</form>
