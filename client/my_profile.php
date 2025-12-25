@@ -1,12 +1,18 @@
 <?php
-session_save_path('/tmp'); // මේ පේළිය අලුතින් දැම්මා
-session_start();
+// Vercel Cookie Fix applied
+// session_start() අවශ්‍ය නැත.
+
+// 1. Database Connection
 include __DIR__ . '/../config/db_conn.php';
 
-if (!isset($_SESSION['user_id'])) { header("Location: ../login.php"); exit(); }
+// 2. Security Check (Cookies භාවිතා කිරීම)
+if (!isset($_COOKIE['user_id']) || $_COOKIE['role'] !== 'client') {
+    header("Location: ../login.php");
+    exit();
+}
 
-$user_id = $_SESSION['user_id'];
-$user_name = $_SESSION['fullname']; // Sidebar එකට නම පෙන්වන්න
+$user_id = $_COOKIE['user_id'];
+$user_name = $_COOKIE['fullname']; // Sidebar එකට නම පෙන්වන්න
 $msg = "";
 
 // Update Profile Logic
@@ -16,7 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $sql = "UPDATE users SET fullname='$fullname', phone='$phone' WHERE id='$user_id'";
     if ($conn->query($sql)) {
-        $_SESSION['fullname'] = $fullname; 
+        // Update Cookie with new name
+        setcookie("fullname", $fullname, time() + (86400 * 1), "/");
         $user_name = $fullname; // Update variable immediately
         $msg = "<div style='color: #34d399; margin-bottom: 15px; background: rgba(16,185,129,0.1); padding: 10px; border-radius: 5px;'>Profile updated successfully!</div>";
     } else {
@@ -33,13 +40,31 @@ $user = $conn->query("SELECT * FROM users WHERE id='$user_id'")->fetch_assoc();
 <head>
     <meta charset="UTF-8">
     <title>My Profile - GreenLife</title>
+    <!-- Global CSS -->
     <link rel="stylesheet" href="../assets/css/style.css">
+    <!-- Dashboard Specific CSS -->
     <link rel="stylesheet" href="style.css">
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
-        /* Nav Bar Specific Fix */
+        /* Navbar Tweaks */
         .nav-content { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; }
         .logo { font-size: 1.5rem; font-weight: bold; color: var(--primary); text-decoration: none; }
+
+        /* Mobile Toggle Button Style */
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+            margin-right: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            .user-welcome-msg { display: none; } /* Mobile වල නම හංගනවා ඉඩ මදි නිසා */
+        }
     </style>
 </head>
 <body>
@@ -47,19 +72,29 @@ $user = $conn->query("SELECT * FROM users WHERE id='$user_id'")->fetch_assoc();
     <!-- FIXED NAV BAR -->
     <nav class="glass" style="position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1);">
         <div class="container nav-content">
-            <a href="../index.php" class="logo"><i class="fas fa-leaf"></i> GreenLife</a>
+            <div style="display: flex; align-items: center;">
+                <!-- Mobile Menu Toggle -->
+                <div class="menu-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <a href="../index.php" class="logo"><i class="fas fa-leaf"></i> GreenLife</a>
+            </div>
+
             <div style="display: flex; gap: 20px; align-items: center;">
-                <span style="color: #e2e8f0; font-size: 0.9rem;">Hello, <b><?php echo explode(' ', $user_name)[0]; ?></b></span>
+                <span class="user-welcome-msg" style="color: #e2e8f0; font-size: 0.9rem;">Hello, <b><?php echo explode(' ', $user_name)[0]; ?></b></span>
                 <a href="../logout.php" class="btn-main" style="padding: 8px 20px; font-size: 0.85rem;">Logout</a>
             </div>
         </div>
     </nav>
 
     <div class="container dashboard-wrapper">
-        <aside class="glass sidebar-nav">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="glass sidebar-nav" id="sidebar">
             <div class="user-profile-section">
                 <img src="https://ui-avatars.com/api/?name=<?php echo $user_name; ?>&background=10b981&color=fff" class="profile-img">
                 <div class="user-name"><?php echo $user_name; ?></div>
+                <div class="user-role">Valued Client</div>
             </div>
             <ul class="sidebar-menu">
                 <li><a href="dashboard.php"><i class="fas fa-th-large"></i> Dashboard</a></li>
@@ -92,5 +127,14 @@ $user = $conn->query("SELECT * FROM users WHERE id='$user_id'")->fetch_assoc();
             </div>
         </main>
     </div>
+
+    <!-- Script to Toggle Sidebar on Mobile -->
+    <script>
+        function toggleSidebar() {
+            var sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+    </script>
+
 </body>
 </html>

@@ -1,11 +1,18 @@
 <?php
-session_save_path('/tmp'); // මේ පේළිය අලුතින් දැම්මා
-session_start();
+// Vercel Cookie Fix applied
+// session_start() අවශ්‍ය නැත.
+
+// 1. Database Connection
 include __DIR__ . '/../config/db_conn.php';
 
-if (!isset($_SESSION['user_id'])) { header("Location: ../login.php"); exit(); }
-$user_id = $_SESSION['user_id'];
-$user_name = $_SESSION['fullname'];
+// 2. Security Check (Cookies භාවිතා කිරීම)
+if (!isset($_COOKIE['user_id']) || $_COOKIE['role'] !== 'client') {
+    header("Location: ../login.php");
+    exit();
+}
+
+$user_id = $_COOKIE['user_id'];
+$user_name = $_COOKIE['fullname'];
 
 // Fetch Completed Appointments (History)
 $sql = "SELECT a.*, s.service_name, u.fullname as doc_name 
@@ -21,13 +28,34 @@ $result = $conn->query($sql);
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medical Records - GreenLife</title>
+    
+    <!-- Global CSS -->
     <link rel="stylesheet" href="../assets/css/style.css">
+    <!-- Dashboard Specific CSS -->
     <link rel="stylesheet" href="style.css">
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
+        /* Navbar Tweaks */
         .nav-content { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; }
         .logo { font-size: 1.5rem; font-weight: bold; color: var(--primary); text-decoration: none; }
+
+        /* Mobile Toggle Button Style */
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+            margin-right: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            .user-welcome-msg { display: none; } /* Mobile වල නම හංගනවා ඉඩ මදි නිසා */
+        }
     </style>
 </head>
 <body>
@@ -35,19 +63,29 @@ $result = $conn->query($sql);
     <!-- FIXED NAV BAR -->
     <nav class="glass" style="position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1);">
         <div class="container nav-content">
-            <a href="../index.php" class="logo"><i class="fas fa-leaf"></i> GreenLife</a>
+            <div style="display: flex; align-items: center;">
+                <!-- Mobile Menu Toggle -->
+                <div class="menu-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <a href="../index.php" class="logo"><i class="fas fa-leaf"></i> GreenLife</a>
+            </div>
+
             <div style="display: flex; gap: 20px; align-items: center;">
-                <span style="color: #e2e8f0; font-size: 0.9rem;">Hello, <b><?php echo explode(' ', $user_name)[0]; ?></b></span>
+                <span class="user-welcome-msg" style="color: #e2e8f0; font-size: 0.9rem;">Hello, <b><?php echo explode(' ', $user_name)[0]; ?></b></span>
                 <a href="../logout.php" class="btn-main" style="padding: 8px 20px; font-size: 0.85rem;">Logout</a>
             </div>
         </div>
     </nav>
 
     <div class="container dashboard-wrapper">
-        <aside class="glass sidebar-nav">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="glass sidebar-nav" id="sidebar">
             <div class="user-profile-section">
-                <img src="https://ui-avatars.com/api/?name=<?php echo $user_name; ?>&background=10b981&color=fff" class="profile-img">
+                <img src="https://ui-avatars.com/api/?name=<?php echo $user_name; ?>&background=10b981&color=fff" class="profile-img" alt="Profile">
                 <div class="user-name"><?php echo $user_name; ?></div>
+                <div class="user-role">Valued Client</div>
             </div>
             <ul class="sidebar-menu">
                 <li><a href="dashboard.php"><i class="fas fa-th-large"></i> Dashboard</a></li>
@@ -58,6 +96,7 @@ $result = $conn->query($sql);
             </ul>
         </aside>
 
+        <!-- Main Content -->
         <main class="main-content">
             <h2 class="section-title">Medical History</h2>
             
@@ -93,5 +132,14 @@ $result = $conn->query($sql);
             <?php endif; ?>
         </main>
     </div>
+
+    <!-- Script to Toggle Sidebar on Mobile -->
+    <script>
+        function toggleSidebar() {
+            var sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+    </script>
+
 </body>
 </html>

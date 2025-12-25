@@ -1,16 +1,19 @@
 <?php
-session_save_path('/tmp'); // Vercel Session Fix
-session_start();
+// Vercel වලදී Sessions අවුල් යන නිසා අපි Cookies පාවිච්චි කරනවා.
+// ඒ නිසා session_start() අවශ්‍ය නෑ.
+
+// 1. Database Connection (Absolute Path භාවිතා කිරීම)
 include __DIR__ . '/../config/db_conn.php';
 
-// User Log වී ඇත්ද සහ ඔහු Client කෙනෙක්ද යන්න තහවුරු කරගැනීම
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'client') {
+// 2. Security Check (Cookies පරීක්ෂා කිරීම)
+if (!isset($_COOKIE['user_id']) || $_COOKIE['role'] !== 'client') {
     header("Location: ../login.php");
     exit();
 }
 
-$user_id = $_SESSION['user_id'];
-$user_name = $_SESSION['fullname'];
+// Cookies වලින් දත්ත ලබා ගැනීම
+$user_id = $_COOKIE['user_id'];
+$user_name = $_COOKIE['fullname'];
 
 // --- DATA FETCHING (දත්ත ලබා ගැනීම) ---
 
@@ -18,7 +21,7 @@ $user_name = $_SESSION['fullname'];
 $sql_upcoming = "SELECT a.*, s.service_name, s.price 
                  FROM appointments a 
                  JOIN services s ON a.service_id = s.id 
-                 WHERE a.client_id = $user_id AND a.appointment_date >= CURDATE() 
+                 WHERE a.client_id = '$user_id' AND a.appointment_date >= CURDATE() 
                  ORDER BY a.appointment_date ASC LIMIT 1";
 $res_upcoming = $conn->query($sql_upcoming);
 $upcoming = $res_upcoming->fetch_assoc();
@@ -27,12 +30,12 @@ $upcoming = $res_upcoming->fetch_assoc();
 $sql_history = "SELECT a.*, s.service_name 
                 FROM appointments a 
                 JOIN services s ON a.service_id = s.id 
-                WHERE a.client_id = $user_id 
+                WHERE a.client_id = '$user_id' 
                 ORDER BY a.appointment_date DESC LIMIT 5";
 $res_history = $conn->query($sql_history);
 
 // 3. මුළු Appointments ගණන
-$sql_count = "SELECT COUNT(*) as total FROM appointments WHERE client_id = $user_id";
+$sql_count = "SELECT COUNT(*) as total FROM appointments WHERE client_id = '$user_id'";
 $total_apps = $conn->query($sql_count)->fetch_assoc()['total'];
 
 ?>
@@ -88,7 +91,7 @@ $total_apps = $conn->query($sql_count)->fetch_assoc()['total'];
 
             <div style="display: flex; gap: 20px; align-items: center;">
                 <span class="user-welcome-msg" style="color: var(--text-color);">Hello, <b><?php echo explode(' ', $user_name)[0]; ?></b></span>
-                <!-- Logout Link Fixed -->
+                <!-- Logout Link Corrected -->
                 <a href="../logout.php" class="btn-main" style="padding: 8px 20px; font-size: 0.85rem;">Logout</a>
             </div>
         </div>
