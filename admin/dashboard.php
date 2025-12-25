@@ -1,13 +1,14 @@
 <?php
-session_save_path('/tmp');
-session_start();
+// Vercel Cookie Fix - No session_start needed
 include __DIR__ . '/../config/db_conn.php';
 
-// Security Check
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+// Security Check (Using Cookies)
+if (!isset($_COOKIE['user_id']) || $_COOKIE['role'] !== 'admin') {
     header("Location: ../login.php");
     exit();
 }
+
+$user_name = $_COOKIE['fullname'];
 
 // Handle Actions (Approve/Reject)
 if (isset($_GET['action']) && isset($_GET['id'])) {
@@ -45,15 +46,37 @@ $res_all = $conn->query($sql_all);
     <!-- Admin Specific Style -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Mobile Toggle for Admin */
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            color: #fff;
+            cursor: pointer;
+            margin-right: 15px;
+        }
+        @media (max-width: 900px) {
+            .menu-toggle { display: block; }
+            .sidebar-nav { display: none; width: 100%; position: absolute; z-index: 999; top: 60px; left: 0; }
+            .sidebar-nav.active { display: block; }
+            .dashboard-container { flex-direction: column; }
+        }
+    </style>
 </head>
 <body>
 
     <!-- Top Bar -->
-    <nav class="glass" style="position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1);">
-        <div class="container nav-content">
-            <a href="#" class="logo"><i class="fas fa-shield-alt"></i> GreenLife <span style="font-size: 0.8rem; color: var(--primary);">ADMIN</span></a>
+    <nav class="glass" style="position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1); background: #0b1120;">
+        <div class="container nav-content" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px;">
+            <div style="display: flex; align-items: center;">
+                <div class="menu-toggle" onclick="document.querySelector('.sidebar-nav').classList.toggle('active')">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <a href="#" class="logo"><i class="fas fa-shield-alt"></i> GreenLife <span style="font-size: 0.8rem; color: var(--primary);">ADMIN</span></a>
+            </div>
+            
             <div style="display: flex; gap: 20px; align-items: center;">
-                <span style="color: #fff;">Welcome, Admin</span>
+                <span style="color: #fff; display: none; @media(min-width:768px){display:inline;}">Welcome, <?php echo explode(' ', $user_name)[0]; ?></span>
                 <a href="../logout.php" class="btn-main" style="padding: 5px 15px; font-size: 0.8rem; background: #fff; color: #000;">Logout</a>
             </div>
         </div>
@@ -77,7 +100,7 @@ $res_all = $conn->query($sql_all);
             
             <h2 style="margin-bottom: 25px; color: #fff;">System Overview</h2>
 
-            <!-- Stats Grid (මෙන්න මෙතන තමයි Class එක වෙනස් කලේ) -->
+            <!-- Stats Grid -->
             <div class="admin-stats-grid">
                 
                 <!-- Pending Requests -->

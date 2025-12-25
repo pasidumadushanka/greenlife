@@ -1,16 +1,15 @@
 <?php
-session_save_path('/tmp'); // මේ පේළිය අලුතින් දැම්මා
-session_start();
+// Vercel Cookie Fix - No session_start needed
 include __DIR__ . '/../config/db_conn.php';
 
-// 1. Check if user is Therapist
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'therapist') {
+// 1. Security Check (Using Cookies)
+if (!isset($_COOKIE['user_id']) || $_COOKIE['role'] !== 'therapist') {
     header("Location: ../login.php");
     exit();
 }
 
-$therapist_id = $_SESSION['user_id'];
-$therapist_name = $_SESSION['fullname'];
+$therapist_id = $_COOKIE['user_id'];
+$therapist_name = $_COOKIE['fullname'];
 
 // --- ACTION HANDLING ---
 // Appointment එකක් "Completed" ලෙස Mark කිරීම
@@ -36,11 +35,8 @@ $sql_appointments = "SELECT a.id, a.appointment_date, a.appointment_time, a.mess
 $res_apps = $conn->query($sql_appointments);
 
 // 2. Stats
-// අද දවසේ හමුවීම් ගණන
 $today = date('Y-m-d');
 $today_count = $conn->query("SELECT COUNT(*) as c FROM appointments WHERE therapist_id=$therapist_id AND appointment_date='$today' AND status='confirmed'")->fetch_assoc()['c'];
-
-// සම්පූර්ණ කළ රෝගීන් ගණන
 $total_patients = $conn->query("SELECT COUNT(*) as c FROM appointments WHERE therapist_id=$therapist_id AND status='completed'")->fetch_assoc()['c'];
 
 ?>
@@ -54,16 +50,38 @@ $total_patients = $conn->query("SELECT COUNT(*) as c FROM appointments WHERE the
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="style.css"> <!-- New Style File -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Mobile Toggle for Therapist */
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            color: #60a5fa;
+            cursor: pointer;
+            margin-right: 15px;
+        }
+        @media (max-width: 900px) {
+            .menu-toggle { display: block; }
+            .sidebar-nav { display: none; width: 100%; position: absolute; z-index: 999; top: 60px; left: 0; }
+            .sidebar-nav.active { display: block; }
+            .dashboard-container { flex-direction: column; }
+        }
+    </style>
 </head>
 <body>
 
     <!-- Nav -->
-    <nav class="glass" style="position: sticky; top: 0; z-index: 100;">
-        <div class="container nav-content">
-            <a href="#" class="logo"><i class="fas fa-user-md"></i> GreenLife <span style="font-size: 0.8rem; color: #60a5fa;">PRO</span></a>
+    <nav class="glass" style="position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1);">
+        <div class="container nav-content" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px;">
+            <div style="display: flex; align-items: center;">
+                <div class="menu-toggle" onclick="document.querySelector('.sidebar-nav').classList.toggle('active')">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <a href="#" class="logo"><i class="fas fa-user-md"></i> GreenLife <span style="font-size: 0.8rem; color: #60a5fa;">PRO</span></a>
+            </div>
+            
             <div style="display: flex; gap: 20px; align-items: center;">
-                <span>Dr. <?php echo explode(' ', $therapist_name)[1]; ?></span>
-                <a href="../index.php" class="btn-main" style="background: #334155; color: white; padding: 5px 15px; font-size: 0.8rem;">Logout</a>
+                <span style="display: none; @media(min-width:768px){display:inline;}">Dr. <?php echo explode(' ', $therapist_name)[1] ?? $therapist_name; ?></span>
+                <a href="../logout.php" class="btn-main" style="background: #334155; color: white; padding: 5px 15px; font-size: 0.8rem;">Logout</a>
             </div>
         </div>
     </nav>
