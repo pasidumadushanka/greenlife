@@ -1,6 +1,6 @@
 <?php
 // Vercel වලදී Sessions අවුල් යන නිසා අපි Cookies පාවිච්චි කරනවා.
-// ඒ නිසා session_start() අවශ්‍ය නෑ.
+// ඒ නිසා session_start() අවශ්‍ය නෑ. මකලා දමන්න.
 
 // 1. Database Connection (Absolute Path භාවිතා කිරීම)
 include __DIR__ . '/../config/db_conn.php';
