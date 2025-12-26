@@ -186,7 +186,7 @@ a {
         top: 0;
     }
 }
-/* --- MOBILE RESPONSIVE UPDATES --- */
+/* --- MOBILE RESPONSIVE UPDATES (FINAL FIXED VERSION) --- */
 
 /* 1. Mobile Navigation Logic */
 .menu-toggle {
@@ -194,6 +194,7 @@ a {
     font-size: 1.5rem;
     color: var(--primary);
     cursor: pointer;
+    z-index: 1002; /* හැමදේටම උඩින් */
 }
 
 /* Mobile Breakpoint (Phones & Tablets) */
@@ -201,28 +202,29 @@ a {
     
     /* Navigation Bar */
     .menu-toggle {
-        display: block; /* ෆෝන් එකේදි පෙන්වනවා */
+        display: block !important; /* ෆෝන් එකේදි පෙන්වනවා */
+        color: #fff; /* අයිකන් එක සුදු පාටින් */
     }
 
     .nav-links {
         display: none; /* මුලින් හංගනවා */
         flex-direction: column;
         width: 100%;
-        position: absolute;
-        top: 70px; /* Header එකට යටින් */
+        height: 100vh; /* මුළු තිරයම වැසෙන ලෙස */
+        position: fixed; /* තිරයට අලවන්න */
+        top: 0;
         left: 0;
-        background: rgba(11, 17, 32, 0.95); /* තද පසුබිම */
-        backdrop-filter: blur(10px);
-        padding: 20px;
-        border-bottom: 1px solid var(--glass-border);
+        background-color: #0b1120; /* වීඩියෝ එක වැසෙන ලෙස තද පසුබිම */
+        padding-top: 80px; /* Header එකට ඉඩ තියන්න */
+        z-index: 1000;
         text-align: center;
-        border-radius: 0 0 20px 20px;
+        overflow-y: auto; /* මෙනු එක දිග වැඩි වුනොත් scroll වෙන්න */
     }
 
     /* JavaScript වලින් active class එක වැටුනම පෙන්වනවා */
     .nav-links.active {
         display: flex;
-        animation: slideDown 0.4s ease forwards;
+        animation: slideDown 0.3s ease-out forwards;
     }
 
     @keyframes slideDown {
@@ -231,12 +233,28 @@ a {
     }
 
     .nav-links li {
-        margin: 15px 0;
+        margin: 20px 0;
+        width: 100%;
+    }
+
+    .nav-links a {
+        font-size: 1.3rem;
+        color: #fff !important; /* ලින්ක්ස් සුදු පාටින් */
+        display: block;
+        padding: 10px;
+    }
+
+    /* Buttons inside Menu */
+    .nav-links .btn-main {
+        width: 80%;
+        margin: 10px auto;
+        display: block;
     }
 
     /* Hero Section Text Sizes */
     .hero-title {
-        font-size: 2.8rem !important; /* අකුරු පොඩි කිරීම */
+        font-size: 2.5rem !important; /* අකුරු පොඩි කිරීම */
+        line-height: 1.2;
     }
     
     .hero-subtitle {
@@ -245,21 +263,27 @@ a {
     }
 
     /* Grids (එක පේළියට වැටෙන්න) */
-    .grid, .services-grid, .stats-grid, .about-grid, .booking-wrapper {
+    .grid, .services-grid, .stats-grid, .about-grid, .booking-wrapper, .steps-grid, .testimonial-grid {
         grid-template-columns: 1fr !important; /* තනි තීරුවක් ලෙස */
-        flex-direction: column; /* Flexbox නම් පහළට */
+        flex-direction: column;
+        gap: 30px;
     }
 
     /* Dashboard Fixes */
     .dashboard-wrapper {
         flex-direction: column;
+        padding-top: 10px;
     }
 
     .sidebar-nav {
         width: 100%; /* Sidebar එක සම්පූර්ණ පළලට */
         margin-bottom: 20px;
         position: relative;
-        top: 0;
+        display: none; /* මුලින් හංගන්න (Toggle Button එකෙන් පෙන්වන්න) */
+    }
+    
+    .sidebar-nav.active {
+        display: block;
     }
 
     /* Table Scrolling (වගු එළියට යන්නේ නැතුව Scroll වෙන්න) */
@@ -274,6 +298,7 @@ a {
     /* Login/Register Forms */
     .auth-card {
         padding: 20px !important;
+        width: 95%; /* Screen එකෙන් 95% ගන්න */
     }
     
     /* Stats Bar (Home Page) */
@@ -285,8 +310,8 @@ a {
     
     .stat-item {
         border: none !important;
-        padding: 10px;
-        background: rgba(255,255,255,0.02);
-        border-radius: 10px;
+        padding: 15px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 15px;
     }
 }
