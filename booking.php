@@ -1,21 +1,18 @@
 <?php
-session_save_path('/tmp');
-session_start();
-include __DIR__ . '/../config/db_conn.php';
+// Vercel Cookie Fix - No session_start needed
+include __DIR__ . '/config/db_conn.php'; // Correct path
 
-// Login වී නැත්නම් Login පිටුවට යවන්න
-if (!isset($_SESSION['user_id'])) {
+// Security Check (Using Cookie)
+if (!isset($_COOKIE['user_id'])) {
     echo "<script>alert('Please login to book an appointment.'); window.location.href='login.php';</script>";
     exit();
 }
 
-$user_id = $_SESSION['user_id'];
+$user_id = $_COOKIE['user_id'];
+$user_name = $_COOKIE['fullname'];
+
 $error = "";
 $success = "";
-
-// Navbar එකේ නම පෙන්වන්න User විස්තර ගන්න
-$user_fetch = $conn->query("SELECT fullname FROM users WHERE id='$user_id'")->fetch_assoc();
-$user_name = $user_fetch['fullname'];
 
 // 1. Services ටික Database එකෙන් ගන්න
 $services_result = $conn->query("SELECT * FROM services");
@@ -123,7 +120,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
 
-    <!-- FIXED NAV BAR (Same as Dashboard) -->
+    <!-- FIXED NAV BAR -->
     <nav class="glass" style="position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1);">
         <div class="container nav-content">
             <a href="index.php" class="logo"><i class="fas fa-leaf"></i> GreenLife</a>
