@@ -1,17 +1,13 @@
 <?php
-// Session එක දැනටමත් Start වී නැත්නම් පමණක් Path එක හදලා Start කරන්න
-if (session_status() === PHP_SESSION_NONE) {
-    session_save_path('/tmp');
-    session_start();
-}
+// Vercel Serverless Environment එකේදි Session වෙනුවට Cookies භාවිතා කෙරේ.
 
-// 2. Dashboard Link එක Role එක අනුව වෙනස් කිරීම
+// Dashboard Link එක Role එක අනුව වෙනස් කිරීම
 $dashboard_link = "client/dashboard.php"; // Default
 
-if (isset($_SESSION['role'])) {
-    if ($_SESSION['role'] == 'admin') {
+if (isset($_COOKIE['role'])) {
+    if ($_COOKIE['role'] == 'admin') {
         $dashboard_link = "admin/dashboard.php";
-    } elseif ($_SESSION['role'] == 'therapist') {
+    } elseif ($_COOKIE['role'] == 'therapist') {
         $dashboard_link = "therapist/dashboard.php";
     } else {
         $dashboard_link = "client/dashboard.php";
@@ -25,14 +21,18 @@ if (isset($_SESSION['role'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GreenLife Wellness Center</title>
+    <!-- Stylesheet -->
     <link rel="stylesheet" href="assets/css/style.css">
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        /* Header Base Styles */
+        /* Header Specific Styles */
         nav {
             position: fixed;
-            top: 0; left: 0; width: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
             z-index: 1000;
             padding: 15px 0;
             transition: 0.4s;
@@ -61,11 +61,13 @@ if (isset($_SESSION['role'])) {
         }
         .nav-links a:hover {
             color: var(--primary);
+            text-shadow: 0 0 8px var(--primary);
         }
     </style>
 </head>
 <body>
 
+<!-- Glassmorphism Navbar -->
 <nav class="glass">
     <div class="container nav-content">
         <a href="index.php" class="logo">
@@ -82,10 +84,13 @@ if (isset($_SESSION['role'])) {
             <li><a href="services.php">Services</a></li>
             <li><a href="about.php">About</a></li>
             
-            <?php if(isset($_SESSION['user_id'])): ?>
+            <!-- Check Cookies instead of Session -->
+            <?php if(isset($_COOKIE['user_id'])): ?>
+                <!-- Logged In නම් -->
                 <li><a href="<?php echo $dashboard_link; ?>" style="color: var(--accent);">Dashboard</a></li>
                 <li><a href="logout.php" class="btn-main" style="padding: 8px 20px; font-size: 0.9rem;">Logout</a></li>
             <?php else: ?>
+                <!-- Log In වී නැත්නම් -->
                 <li><a href="login.php">Login</a></li>
                 <li><a href="register.php" class="btn-main" style="padding: 8px 20px; font-size: 0.9rem;">Sign Up</a></li>
             <?php endif; ?>
@@ -113,4 +118,5 @@ if (isset($_SESSION['role'])) {
     });
 </script>
 
+<!-- Body content padding to avoid overlap -->
 <div style="padding-top: 80px;"></div>
